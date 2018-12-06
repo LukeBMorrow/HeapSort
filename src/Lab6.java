@@ -727,19 +727,21 @@ class Heap {
      * only child, if it has just one child) OR it is in a leaf.
      *
      ******************************************************************/
-    private void siftDown(int startIndex) {
+    public void siftDown(int startIndex) {
         int index = startIndex;
-        while (index<heapSize && (heap[index] < heap[leftChildIndex(index)] ||
-                heap[index] < heap[rightChildIndex(index)])) {
+        while((leftChildIndex(index)<heapSize && heap[leftChildIndex(index)]>heap[index]) ||
+                (rightChildIndex(index)<heapSize && heap[rightChildIndex(index)]>heap[index])){
 
-            if (heap[leftChildIndex(index)] > heap[rightChildIndex(index)]) {
-                swap(leftChildIndex(index), index);
+            if(rightChildIndex(index)>=heapSize){
+                swap(index,leftChildIndex(index));
                 index = leftChildIndex(index);
-            } else {
-                swap(rightChildIndex(index), index);
+            }else if(heap[leftChildIndex(index)]>heap[rightChildIndex(index)]){
+                swap(index,leftChildIndex(index));
+                index = leftChildIndex(index);
+            }else{
+                swap(index,rightChildIndex(index));
                 index = rightChildIndex(index);
             }
-
         }
     } // end siftDown
 
@@ -754,8 +756,8 @@ class Heap {
      ******************************************************************/
     public int deleteMax() {
         int result = heap[0];
-        heap[0]=heap[heapSize];
-        heap[heapSize]=Integer.MIN_VALUE;
+        heap[0]=heap[heapSize-1];
+        heap[heapSize-1]=result;
         heapSize--;
         siftDown(0);
         return result;
@@ -771,7 +773,9 @@ class Heap {
      *
      ******************************************************************/
     private void heapify() {
-
+        for(int i=heapSize-1; i>=0;i--){
+            siftDown(i);
+        }
     } // end heapify
 
     /*******************************************************************
@@ -784,7 +788,9 @@ class Heap {
     // Sorts the items in the heap until they are in ascending order
     // in the array (and not a heap anymore).
     public void sort() {
-        /************* YOUR CODE GOES HERE ******************/
+        while(heapSize>0){
+            deleteMax();
+        }
     } // end sort
 
 } // end class Heap
